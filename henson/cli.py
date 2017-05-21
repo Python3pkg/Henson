@@ -19,6 +19,7 @@ from watchdog.observers import Observer
 
 from . import __version__
 from .base import Application, _new_event_loop
+import collections
 
 __all__ = ('register_commands',)
 
@@ -85,9 +86,9 @@ def register_commands(namespace, functions, namespace_kwargs=None,
             # None isn't iterable.
             defaults = {}
         else:
-            defaults = dict(zip(
+            defaults = dict(list(zip(
                 spec.args[-len(spec.defaults):],
-                spec.defaults))
+                spec.defaults)))
 
         # Keyword-only arguments are exposed to the command line as
         # optional arguments. By default two flags are available for
@@ -96,7 +97,7 @@ def register_commands(namespace, functions, namespace_kwargs=None,
         # share the same first letter, however, the abbreviated flags
         # won't be used for them.
         conflicts = Counter(a[0] for a in spec.kwonlyargs)
-        conflicts = tuple(k for k, v in conflicts.items() if v > 1)
+        conflicts = tuple(k for k, v in list(conflicts.items()) if v > 1)
 
         # Iterate over the rest of the arguments. Positional and keyword
         # arguments are combined by inspect, but keyword-only arguments
@@ -298,7 +299,7 @@ def _import_application(application_path):
         # If the attribute specified by app_name is a callable, assume
         # it is an application factory and call it to get an instance of
         # a Henson application.
-        if callable(app):
+        if isinstance(app, collections.Callable):
             app = app()
         # Fail if the attribute specified is not a Henson application
         if not isinstance(app, Application):

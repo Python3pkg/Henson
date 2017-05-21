@@ -63,7 +63,7 @@ class Extension:
             app (henson.base.Application): An application instance that
                 will be initialized.
         """
-        for key, value in self.DEFAULT_SETTINGS.items():
+        for key, value in list(self.DEFAULT_SETTINGS.items()):
             app.settings.setdefault(key, value)
 
         required_settings = set(self.REQUIRED_SETTINGS)

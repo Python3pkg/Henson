@@ -15,7 +15,7 @@ class Config(dict):
         Args:
             mapping (dict): A mapping encapsulating settings.
         """
-        for key, value in mapping.items():
+        for key, value in list(mapping.items()):
             self[key] = value
 
     def from_object(self, obj):
